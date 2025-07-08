@@ -42,7 +42,21 @@ namespace DiffLens.VisualStudio.ToolWindows
                 if (configService == null) return;
 
                 // Load LLM Provider
-                LLMProviderComboBox.SelectedIndex = configService.LLMProvider == LLMProvider.Bedrock ? 0 : 1;
+                switch (configService.LLMProvider)
+                {
+                    case LLMProvider.Copilot:
+                        LLMProviderComboBox.SelectedIndex = 0;
+                        break;
+                    case LLMProvider.Bedrock:
+                        LLMProviderComboBox.SelectedIndex = 1;
+                        break;
+                    case LLMProvider.VSCodeLM:
+                        LLMProviderComboBox.SelectedIndex = 2;
+                        break;
+                    default:
+                        LLMProviderComboBox.SelectedIndex = 0; // Default to Copilot
+                        break;
+                }
 
                 // Load basic settings
                 ContextLinesTextBox.Text = configService.ContextLines.ToString();
@@ -176,7 +190,23 @@ namespace DiffLens.VisualStudio.ToolWindows
             if (isUpdatingSettings) return;
 
             var selectedProvider = (LLMProviderComboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString();
-            var provider = selectedProvider == "Bedrock" ? LLMProvider.Bedrock : LLMProvider.VSCodeLM;
+            LLMProvider provider;
+            
+            switch (selectedProvider)
+            {
+                case "Copilot":
+                    provider = LLMProvider.Copilot;
+                    break;
+                case "Bedrock":
+                    provider = LLMProvider.Bedrock;
+                    break;
+                case "VSCodeLM":
+                    provider = LLMProvider.VSCodeLM;
+                    break;
+                default:
+                    provider = LLMProvider.Copilot;
+                    break;
+            }
             
             ConfigurationService.Instance.LLMProvider = provider;
             UpdateUIBasedOnProvider();

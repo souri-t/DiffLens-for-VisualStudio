@@ -23,6 +23,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.32112" />
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.0.5232" />
+    <PackageReference Include="Microsoft.VisualStudio.LanguageServices" Version="4.3.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="AWSSDK.Core" Version="3.7.400" />
     <PackageReference Include="AWSSDK.BedrockRuntime" Version="3.7.305" />

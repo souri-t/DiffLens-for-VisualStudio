@@ -36,10 +36,12 @@ namespace DiffLens.VisualStudio.Services
                 {
                     case LLMProvider.Bedrock:
                         return await ReviewWithBedrockAsync(diff, config);
+                    case LLMProvider.Copilot:
+                        return await ReviewWithCopilotAsync(diff, config);
                     case LLMProvider.VSCodeLM:
                         // Note: VS Code LM API is not directly available in Visual Studio
                         // This would require integration with external services or APIs
-                        throw new NotSupportedException("VS Code LM API is not available in Visual Studio. Please use AWS Bedrock.");
+                        throw new NotSupportedException("VS Code LM API is not available in Visual Studio. Please use AWS Bedrock or Copilot.");
                     default:
                         throw new ArgumentException($"Unknown LLM provider: {config.LLMProvider}");
                 }
@@ -115,6 +117,51 @@ Please provide a detailed code review with specific suggestions for improvement.
             catch (Exception ex)
             {
                 throw new Exception($"Bedrock API error: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Reviews code using Visual Studio Copilot
+        /// </summary>
+        private async Task<ReviewResult> ReviewWithCopilotAsync(string diff, ReviewConfig config)
+        {
+            try
+            {
+                var copilotService = CopilotService.Instance;
+                if (copilotService == null)
+                {
+                    return new ReviewResult("Error", "Copilot service is not initialized");
+                }
+
+                // Check if Copilot is available
+                if (!await copilotService.IsCopilotAvailableAsync())
+                {
+                    return new ReviewResult("Warning", 
+                        "Visual Studio Copilot is not available. Please ensure GitHub Copilot extension is installed and enabled.\n\n" +
+                        "Alternative: Switch to AWS Bedrock provider for automated code review.");
+                }
+
+                var diffService = DiffService.Instance;
+                var formattedDiff = diffService?.FormatDiffAsMarkdown(diff) ?? diff;
+
+                // Create a comprehensive prompt for Copilot
+                var prompt = $@"{config.SystemPrompt}
+
+Review Perspective: {config.ReviewPerspective}
+
+Please review the following git diff:
+
+{formattedDiff}
+
+Please provide a detailed code review with specific suggestions for improvement.";
+
+                var reviewText = await copilotService.RequestCodeReviewAsync(formattedDiff, config.ReviewPerspective);
+                
+                return new ReviewResult("Visual Studio Copilot", reviewText);
+            }
+            catch (Exception ex)
+            {
+                return new ReviewResult("Error", $"Failed to perform Copilot review: {ex.Message}");
             }
         }
 

@@ -43,6 +43,7 @@
                         <TextBlock Text="LLM Provider:" Margin="0,2"/>
                         <ComboBox Name="LLMProviderComboBox" Margin="0,2" Height="25"
                                   SelectionChanged="LLMProviderComboBox_SelectionChanged">
+                            <ComboBoxItem Content="Visual Studio Copilot" Tag="Copilot"/>
                             <ComboBoxItem Content="AWS Bedrock" Tag="Bedrock"/>
                             <ComboBoxItem Content="VS Code LM" Tag="VSCodeLM" IsEnabled="False"/>
                         </ComboBox>

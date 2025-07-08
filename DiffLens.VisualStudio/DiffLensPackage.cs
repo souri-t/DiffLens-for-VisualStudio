@@ -58,6 +58,7 @@ namespace DiffLens.VisualStudio
             await GitService.InitializeAsync(this);
             await ReviewService.InitializeAsync(this);
             await LanguageService.InitializeAsync(this);
+            await CopilotService.InitializeAsync(this);
         }
 
         #endregion

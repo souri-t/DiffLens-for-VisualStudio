@@ -51,7 +51,8 @@ namespace DiffLens.VisualStudio.Models
     public enum LLMProvider
     {
         Bedrock,
-        VSCodeLM
+        VSCodeLM,
+        Copilot
     }
 
     /// <summary>

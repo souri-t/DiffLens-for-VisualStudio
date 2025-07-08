@@ -22,7 +22,7 @@ namespace DiffLens.VisualStudio.Services
 
         public LLMProvider LLMProvider
         {
-            get => GetEnumSetting(nameof(LLMProvider), Models.LLMProvider.Bedrock);
+            get => GetEnumSetting(nameof(LLMProvider), Models.LLMProvider.Copilot);
             set => SetSetting(nameof(LLMProvider), value.ToString());
         }
 
