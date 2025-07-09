@@ -1,84 +1,42 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
-    <UseWPF>true</UseWPF>
-    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <TargetFramework>net8.0</TargetFramework>
+    <OutputType>Exe</OutputType>
     <RootNamespace>DiffLens.VisualStudio</RootNamespace>
     <AssemblyName>DiffLens.VisualStudio</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     
-    <!-- Visual Studio Extension specific settings -->
-    <OutputType>Library</OutputType>
-    <GeneratePkgDefFile>true</GeneratePkgDefFile>
-    <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
-    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
-    <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
-    <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
-    <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
-    <CreateVsixContainer>true</CreateVsixContainer>
-    <DeployExtension>false</DeployExtension>
-    <VSIXSubPath>DiffLens</VSIXSubPath>
-    <VsixType>v3</VsixType>
-    <StartAction>Program</StartAction>
-    <StartProgram>$(DevEnvDir)devenv.exe</StartProgram>
-    <StartArguments>/rootsuffix Exp</StartArguments>
-    <ZipPackageCompressionLevel>Normal</ZipPackageCompressionLevel>
-    <IsVsixProject>true</IsVsixProject>
-    
     <!-- Compiler settings -->
-    <LangVersion>8.0</LangVersion>
-    <UseVSSDK>true</UseVSSDK>
-    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+    <LangVersion>latest</LangVersion>
     <NoWarn>$(NoWarn);CA1416</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.32112.339" />
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.0.5232">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.LanguageServices" Version="4.3.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="AWSSDK.Core" Version="3.7.400" />
     <PackageReference Include="AWSSDK.BedrockRuntime" Version="3.7.305" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <VSCTCompile Include="DiffLensPackage.vsct">
-      <ResourceName>Menus.ctmenu</ResourceName>
-    </VSCTCompile>
+    <!-- Visual Studio SDK依存のファイルを一時的に除外 -->
+    <Compile Remove="DiffLensPackage.cs" />
+    <Compile Remove="Commands\*.cs" />
+    <Compile Remove="ToolWindows\*.cs" />
+    <Compile Remove="Services\ConfigurationService.cs" />
+    <Compile Remove="Services\CopilotService.cs" />
+    <Compile Remove="Services\LanguageService.cs" />
+    <!-- XAMLファイルも除外 -->
+    <Page Remove="ToolWindows\*.xaml" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Resources\**\*">
-      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
-  <ItemGroup>
-    <None Include="source.extension.vsixmanifest">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <VSIXSourceItem Include="source.extension.vsixmanifest">
-      <Generator>VsixManifestGenerator</Generator>
-    </VSIXSourceItem>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-  </ItemGroup>
-
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\VSSDK\Microsoft.VsSDK.targets" Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\VSSDK\Microsoft.VsSDK.targets')" />
 
 </Project>

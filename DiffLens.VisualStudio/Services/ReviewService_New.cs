@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,9 +31,9 @@ namespace DiffLens.VisualStudio.Services
         {
             try
             {
-                switch (config.LLMProvider.ToString().ToLower())
+                switch (config.LLMProvider.ToLower())
                 {
-                    case "bedrock":
+                    case "aws bedrock":
                         return await ReviewWithBedrockAsync(diff, config);
                     case "copilot":
                         return await ReviewWithCopilotAsync(diff, config);
@@ -159,9 +158,9 @@ Please provide a detailed code review with specific suggestions for improvement.
         {
             try
             {
-                switch (config.LLMProvider.ToString().ToLower())
+                switch (config.LLMProvider.ToLower())
                 {
-                    case "bedrock":
+                    case "aws bedrock":
                         return await TestBedrockConnectionAsync(config);
                     case "copilot":
                         return false; // Not available in .NET Core version
@@ -229,7 +228,7 @@ Please provide a detailed code review with specific suggestions for improvement.
         /// </summary>
         public string[] GetSupportedModels(string provider)
         {
-            switch (provider?.ToLower())
+            switch (provider.ToLower())
             {
                 case "aws bedrock":
                     return new[]

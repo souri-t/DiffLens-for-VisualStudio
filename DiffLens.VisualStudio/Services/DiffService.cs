@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.Shell;
 
 namespace DiffLens.VisualStudio.Services
 {
@@ -13,7 +12,7 @@ namespace DiffLens.VisualStudio.Services
     {
         public static DiffService Instance { get; private set; }
 
-        public static async Task InitializeAsync(IAsyncServiceProvider serviceProvider)
+        public static async Task InitializeAsync()
         {
             await Task.Run(() =>
             {

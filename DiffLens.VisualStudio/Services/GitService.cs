@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.Shell;
 using DiffLens.VisualStudio.Models;
 
 namespace DiffLens.VisualStudio.Services
@@ -17,7 +16,7 @@ namespace DiffLens.VisualStudio.Services
     {
         public static GitService? Instance { get; private set; }
 
-        public static async Task InitializeAsync(IAsyncServiceProvider serviceProvider)
+        public static async Task InitializeAsync()
         {
             await Task.Run(() =>
             {
