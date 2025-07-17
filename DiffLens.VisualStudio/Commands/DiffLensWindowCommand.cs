@@ -1,21 +1,22 @@
 using System;
 using System.ComponentModel.Design;
-using System.Threading.Tasks;
+using System.Globalization;
 using Microsoft.VisualStudio.Shell;
-using DiffLens.VisualStudio.Services;
+using Microsoft.VisualStudio.Shell.Interop;
+using DiffLens.VisualStudio.ToolWindows;
 using Task = System.Threading.Tasks.Task;
 
 namespace DiffLens.VisualStudio.Commands
 {
     /// <summary>
-    /// Command handler for opening DiffLens settings
+    /// Command handler for opening the DiffLens tool window
     /// </summary>
-    internal sealed class OpenSettingsCommand
+    internal sealed class DiffLensWindowCommand
     {
         /// <summary>
-        /// Command ID.
+        /// Command ID for the DiffLens window command
         /// </summary>
-        public const int CommandId = 0x0102;
+        public const int CommandId = 0x0103;
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -28,23 +29,25 @@ namespace DiffLens.VisualStudio.Commands
         private readonly AsyncPackage package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OpenSettingsCommand"/> class.
+        /// Initializes a new instance of the <see cref="DiffLensWindowCommand"/> class.
+        /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
-        private OpenSettingsCommand(AsyncPackage package, OleMenuCommandService commandService)
+        /// <param name="package">Owner package, not null.</param>
+        /// <param name="commandService">Command service to add command to, not null.</param>
+        private DiffLensWindowCommand(AsyncPackage package, OleMenuCommandService commandService)
         {
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
 
-            // Settings command only
-            var settingsMenuCommandID = new CommandID(CommandSet, CommandId);
-            var settingsMenuItem = new OleMenuCommand(this.ExecuteSettings, settingsMenuCommandID);
-            commandService.AddCommand(settingsMenuItem);
+            var menuCommandID = new CommandID(CommandSet, CommandId);
+            var menuItem = new MenuCommand(this.Execute, menuCommandID);
+            commandService.AddCommand(menuItem);
         }
 
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static OpenSettingsCommand Instance
+        public static DiffLensWindowCommand Instance
         {
             get;
             private set;
@@ -64,39 +67,45 @@ namespace DiffLens.VisualStudio.Commands
         /// <summary>
         /// Initializes the singleton instance of the command.
         /// </summary>
+        /// <param name="package">Owner package, not null.</param>
         public static async Task InitializeAsync(AsyncPackage package)
         {
+            // Switch to the main thread - the call to AddCommand in DiffLensWindowCommand's constructor requires
+            // the UI thread.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
 
             OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
-            Instance = new OpenSettingsCommand(package, commandService);
+            Instance = new DiffLensWindowCommand(package, commandService);
         }
 
         /// <summary>
-        /// Executes the settings command
+        /// This function is the callback used to execute the command when the menu item is clicked.
+        /// See the constructor to see how the menu item is associated with this function using
+        /// OleMenuCommandService service and MenuCommand class.
         /// </summary>
-        private void ExecuteSettings(object sender, EventArgs e)
+        /// <param name="sender">Event sender.</param>
+        /// <param name="e">Event args.</param>
+        private void Execute(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
             try
             {
-                // Open the options dialog
                 var package = this.package as DiffLensPackage;
                 if (package != null)
                 {
-                    package.ShowOptionPage(typeof(OptionsPage));
+                    Task.Run(async () => await package.ShowToolWindowAsync());
                 }
             }
             catch (Exception ex)
             {
                 VsShellUtilities.ShowMessageBox(
                     this.package,
-                    $"Error opening settings: {ex.Message}",
+                    $"Error opening DiffLens window: {ex.Message}",
                     "DiffLens Error",
-                    Microsoft.VisualStudio.Shell.Interop.OLEMSGICON.OLEMSGICON_CRITICAL,
-                    Microsoft.VisualStudio.Shell.Interop.OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                    Microsoft.VisualStudio.Shell.Interop.OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                    OLEMSGICON.OLEMSGICON_CRITICAL,
+                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
             }
         }
     }

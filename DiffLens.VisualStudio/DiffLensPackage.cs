@@ -27,7 +27,7 @@ namespace DiffLens.VisualStudio
         /// <summary>
         /// DiffLensPackage GUID string.
         /// </summary>
-        public const string PackageGuidString = "a74d0f88-1234-4567-8901-1234567890ab";
+        public const string PackageGuidString = "a74d0f88-5432-4567-8901-1234567890ab";
 
         public static DiffLensPackage? Instance { get; private set; }
 
@@ -48,17 +48,19 @@ namespace DiffLens.VisualStudio
 
             Instance = this;
 
-            // Initialize commands
-            await ReviewCodeCommand.InitializeAsync(this);
-            await PreviewDiffCommand.InitializeAsync(this);
-            await OpenSettingsCommand.InitializeAsync(this);
-
-            // Initialize services
+            // Initialize services first
             await ConfigurationService.InitializeAsync(this);
             await GitService.InitializeAsync(this);
             await ReviewService.InitializeAsync(this);
             await LanguageService.InitializeAsync(this);
             await CopilotService.InitializeAsync(this);
+
+            // Initialize commands - re-enable as VSCT is fixed
+            await DiffLensWindowCommand.InitializeAsync(this);
+            // TODO: Add other commands back once VSCT is fully working
+            // await ReviewCodeCommand.InitializeAsync(this);
+            // await PreviewDiffCommand.InitializeAsync(this);
+            // await OpenSettingsCommand.InitializeAsync(this);
         }
 
         #endregion

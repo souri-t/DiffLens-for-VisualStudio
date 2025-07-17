@@ -1,0 +1,30 @@
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011">
+  <Metadata>
+    <Identity Id="DiffLens.VisualStudio.A74D0F88-1234-4567-8901-1234567890AB" Version="1.0" Language="en-US" Publisher="DiffLens" />
+    <DisplayName>DiffLens for Visual Studio</DisplayName>
+    <Description xml:space="preserve">AI-powered git diff code review using AWS Bedrock. Analyze your code changes with intelligent AI feedback to improve code quality, security, and best practices.</Description>
+    <MoreInfo>https://github.com/your-repo/DiffLens</MoreInfo>
+    <License>LICENSE</License>
+    <Icon>Resources\icon.ico</Icon>
+    <PreviewImage>Resources\DiffLensWindow.png</PreviewImage>
+    <Tags>git, diff, ai, code review, aws bedrock, claude</Tags>
+  </Metadata>
+  <Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0,18.0)" />
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[17.0,18.0)" />
+    <InstallationTarget Id="Microsoft.VisualStudio.Enterprise" Version="[17.0,18.0)" />
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" Version="[4.8,)" />
+    <Dependency Id="Microsoft.VisualStudio.MPF.17.0" DisplayName="Visual Studio MPF 17.0" Version="[17.0,18.0)" />
+  </Dependencies>
+  <Prerequisites>
+    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[17.0,18.0)" DisplayName="Visual Studio core editor" />
+    <Prerequisite Id="Microsoft.VisualStudio.Component.DiagnosticTools" Version="[17.0,18.0)" DisplayName="Visual Studio diagnostic tools" />
+  </Prerequisites>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.VsPackage" Path="DiffLens.VisualStudio.pkgdef" />
+    <Asset Type="Microsoft.VisualStudio.Assembly" Path="DiffLens.VisualStudio.dll" AssemblyName="DiffLens.VisualStudio, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Asset Type="Microsoft.VisualStudio.MefComponent" Path="DiffLens.VisualStudio.dll" AssemblyName="DiffLens.VisualStudio, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+  </Assets>
+</PackageManifest>

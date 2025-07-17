@@ -21,7 +21,7 @@ namespace DiffLens.VisualStudio.Commands
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
-        public static readonly Guid CommandSet = new Guid("a74d0f88-1234-4567-8901-1234567890ab");
+        public static readonly Guid CommandSet = new Guid("9b64c223-4f2a-4348-a8f6-15582f2927f0");
 
         /// <summary>
         /// VS Package that provides this command, not null.
